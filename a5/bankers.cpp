@@ -140,3 +140,47 @@ int main() {
     }
     return 0;
 }
+
+// Enter the number of processes: 5
+
+// Enter the number of resources: 3
+
+// Enter the maximum resource requirements:
+// For Process 0 Enter 3 Max Resources : 7 5 3
+// For Process 1 Enter 3 Max Resources : 3 2 2
+// For Process 2 Enter 3 Max Resources : 9 0 2
+// For Process 3 Enter 3 Max Resources : 2 2 2
+// For Process 4 Enter 3 Max Resources : 4 3 3
+
+// Enter the currently allocated resources:
+// For Process 0 Enter 3 currently Allocated Resources : 0 1 0
+// For Process 1 Enter 3 currently Allocated Resources : 2 0 0
+// For Process 2 Enter 3 currently Allocated Resources : 3 0 2
+// For Process 3 Enter 3 currently Allocated Resources : 2 1 1
+// For Process 4 Enter 3 currently Allocated Resources : 0 0 2
+
+// Enter the available resources:
+// Resource 0: 3
+// Resource 1: 3
+// Resource 2: 2
+
+// The required resources (Needed) are:
+//  R0 R1 R2 
+// P0 7 4 3 
+// P1 1 2 2 
+// P2 6 0 0 
+// P3 0 1 1 
+// P4 4 3 1 
+
+// Checking for safe or unsafe state:
+// The system is in an unsafe state.
+
+// The safe sequence is: P1 P3 P4 P0 P2 
+
+// The final process-wise available resources table:
+//  R0 R1 R2 
+// P0 7 5 5 
+// P1 5 3 2 
+// P2 10 5 7 
+// P3 7 4 3 
+// P4 7 4 5 

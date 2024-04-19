@@ -3,37 +3,39 @@ using namespace std;
 
 // Function to allocate memory to blocks as per Next Fit algorithm
 void nextFit(int blockSize[], int blockNum, int processSize[], int processNum) {
-    
-    // Stores block id of the block allocated to a process
     int allocation[processNum];
-    
-    // Initially no block is assigned to any process
     memset(allocation, -1, sizeof(allocation));
-    
-    // Start from the first block, this is the pointer from which the next block is to be searched
+
     int start = 0;
-    
-    // Pick each process and find suitable blocks according to its size and assign to it
-    for (int i = 0; i < processNum; i++){
-        int j;
-        for (j = start; j < blockNum; j++){
+
+    for (int i = 0; i < processNum; i++) {
+        int found = false;
+        for (int j = start; j < blockNum; j++) {
             if (blockSize[j] >= processSize[i]) {
-                allocation[i] = j; // Allocate block j to process i
-                blockSize[j] -= processSize[i]; // Reduce available memory in this block
-                start = j + 1; // Start next search from next block
+                allocation[i] = j;
+                blockSize[j] -= processSize[i];
+                start = (j + 1) % blockNum;
+                found = true;
                 break;
             }
         }
-        
-        // If no block is found, start from the first block for the next process
-        if (j == blockNum){
-            start = 0;
+
+        if (!found) {
+            for (int j = 0; j < start; j++) {
+                if (blockSize[j] >= processSize[i]) {
+                    allocation[i] = j;
+                    blockSize[j] -= processSize[i];
+                    start = (j + 1) % blockNum;
+                    found = true;
+                    break;
+                }
+            }
         }
     }
-    
+
     cout << "\nProcess No.\tProcess Size\tBlock no.\n";
     for (int i = 0; i < processNum; i++) {
-        cout << " " << i+1 << "\t\t" << processSize[i] << "\t\t";
+        cout << " " << i + 1 << "\t\t" << processSize[i] << "\t\t";
         if (allocation[i] != -1)
             cout << allocation[i] + 1;
         else
@@ -72,3 +74,14 @@ int main() {
     return 0;
 
 }
+
+// Enter the number of blocks: 5
+// Enter the number of processes: 4
+// Enter all the blocks sizes: 100 500 200 300 600
+// Enter all the process sizes: 212 417 112 426
+
+// Process No. Process Size    Block no.
+//  1      212     2
+//  2      417     5
+//  3      112     2
+//  4      426     Not Allocated

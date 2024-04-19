@@ -19,10 +19,15 @@ int findMIN(int diff[][2], int n) {
     return index;
 }
 
-void shortestSeekTimeFirst(int request[], int head, int n) {
+void shortestSeekTimeFirst(int request[], int head, int n){
     
     if (n == 0) return;
-    int diff[n][2] = {{0, 0}};
+    int diff[n][2];
+    for(int i=0; i<n; i++){
+        for(int j=0; j<2;j++){
+            diff[i][j] = 0;
+        }
+    }
     
     int seekcount = 0;
     
@@ -62,3 +67,9 @@ int main() {
     shortestSeekTimeFirst(proc, head, n);
     return 0;
 }
+
+// Enter the number of requests: 8
+// Enter the requests: 14 37 65 67 98 112 124 183
+// Enter the initial head position: 53
+// Total number of seek operations = 236
+// Seek sequence is : 53 65 67 37 14 98 112 124 183 

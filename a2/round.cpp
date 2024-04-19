@@ -1,9 +1,5 @@
-#include <iostream>
-#include <vector>
-#include <algorithm>
-#include <iomanip>
-#include <queue>
-#include <string.h>
+// #include <iostream>
+#include <bits/stdc++.h>
 using namespace std;
 
 struct process {
@@ -191,3 +187,59 @@ int main() {
     cout<<""<<endl;
     return 0;
 }
+
+// Enter the number of processes: 6
+
+// Enter time quantum: 2
+// Enter ARRIVAL time of process 1: 0
+// Enter BURST time of process 1: 4
+
+// Enter ARRIVAL time of process 2: 1
+// Enter BURST time of process 2: 5
+
+// Enter ARRIVAL time of process 3: 2
+// Enter BURST time of process 3: 2
+
+// Enter ARRIVAL time of process 4: 3
+// Enter BURST time of process 4: 1
+
+// Enter ARRIVAL time of process 5: 4
+// Enter BURST time of process 5: 6
+
+// Enter ARRIVAL time of process 6: 6
+// Enter BURST time of process 6: 3
+
+
+
+
+// #P  AT  BT  ST  CT  TAT WT  RT
+
+// 1   0   4   0   8   8   4   0
+
+// 2   1   5   2   18  17  12  1
+
+// 3   2   2   4   6   4   2   2
+
+// 4   3   1   8   9   6   5   5
+
+// 5   4   6   9   21  17  11  5
+
+// 6   6   3   13  19  13  10  7
+
+
+// Gantt Chart:
+// -----------
+
+
+// | 1 | 2 | 3 | 1 | 4 | 5 | 2 | 6 | 5 | 2 | 6 | 5 |
+// 0   2   4   6   8   9   11  13  15  17  18  19  21
+
+// Average Turnaround Time = 10.83
+
+// Average Waiting Time = 7.33
+
+// Average Response Time = 3.33
+
+// CPU Utilization = 100.00%
+
+// Throughput = 0.32 process/unit time

@@ -67,3 +67,26 @@ int main(){
     cout << "\nTotal Hits :\t" << pages - pageFaults;
     return 0;
 }
+
+// Enter the frame size: 3
+// Enter the number of pages: 15
+// Enter the page values: 7 0 1 2 0 3 0 4 2 3 0 3 1 2 0
+// Incoming    Frame 1     Frame 2     Frame 3
+// 7               7               -               -
+// 0               7               0               -
+// 1               7               0               1
+// 2               2               0               1
+// 0               2               0               1
+// 3               2               3               1
+// 0               2               3               0
+// 4               4               3               0
+// 2               4               2               0
+// 3               4               2               3
+// 0               0               2               3
+// 3               0               2               3
+// 1               0               1               3
+// 2               0               1               2
+// 0               0               1               2
+
+// Total Page Faults:  12
+// Total Hits :    3

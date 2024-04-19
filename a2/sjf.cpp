@@ -1,8 +1,5 @@
 #include <iostream>
-#include <vector>
-#include <algorithm>
-#include <iomanip>
-#include <cstring>
+#include <bits/stdc++.h>
 using namespace std;
 
 // Define the struct which has 7 attributes
@@ -15,7 +12,7 @@ struct process {
     int turnaround_time;
     int waiting_time;
 };
-
+   
 int main() {
     int n;
     struct process p[100];
@@ -159,3 +156,49 @@ int main() {
 
     return 0;
 }
+
+// Enter the number of processes: 5
+
+// Enter ARRIVAL time of process 1: 1
+// Enter BURST time of process 1: 7
+
+// Enter ARRIVAL time of process 2: 2
+// Enter BURST time of process 2: 5
+
+// Enter ARRIVAL time of process 3: 3
+// Enter BURST time of process 3: 1
+
+// Enter ARRIVAL time of process 4: 4
+// Enter BURST time of process 4: 2
+
+// Enter ARRIVAL time of process 5: 5
+// Enter BURST time of process 5: 8
+
+
+
+
+// #P  AT  BT  ST  CT  TAT WT  RT
+
+// 1   1   7   1   8   7   0
+
+// 2   2   5   11  16  14  9
+
+// 3   3   1   8   9   6   5
+
+// 4   4   2   9   11  7   5
+
+// 5   5   8   16  24  19  11
+
+
+// Gantt Chart:
+// -----------
+
+
+// | 1 | 3 | 4 | 2 | 5 |
+// 1   8   9   11  16  24
+
+// Average Turnaround Time = 10.60
+
+// Average Waiting Time = 6.00
+
+// CPU Utilization = 95.83%

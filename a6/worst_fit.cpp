@@ -72,3 +72,14 @@ int main() {
     worstFit(blockarray, m, processarray, n);
     return 0;
 }
+
+// Enter the number of blocks: 5
+// Enter the number of process: 4
+// Enter all the blocks size: 100 500 200 300 600
+// Enter all the process size: 212 417 112 426
+
+// Process No. Process Size    Block no.
+//  1      212     5
+//  2      417     2
+//  3      112     5
+//  4      426     Not Allocated

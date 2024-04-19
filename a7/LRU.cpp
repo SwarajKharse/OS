@@ -102,3 +102,30 @@ int main() {
 
     return 0;
 }
+
+// Enter the number of frames: 4
+// Enter the number of pages: 20
+// Enter the page values: 7 0 1 2 0 3 0 4 2 3 0 3 2 1 2 0 1 7 0 1
+// Incoming    Frame 1     Frame 2     Frame 3     Frame 4
+// 7           7           -1          -1          -1
+// 0           7           0           -1          -1
+// 1           7           0           1           -1
+// 2           7           0           1           2
+// 0           7           0           1           2
+// 3           3           0           1           2
+// 0           3           0           1           2
+// 4           3           0           1           4
+// 2           3           0           2           4
+// 3           3           0           2           4
+// 0           3           0           2           4
+// 3           3           0           2           4
+// 2           3           0           2           4
+// 1           3           0           2           1
+// 2           3           0           2           1
+// 0           3           0           2           1
+// 1           3           0           2           1
+// 7           7           0           2           1
+// 0           7           0           2           1
+// 1           7           0           2           1
+
+// Total Number of Page Faults: 9

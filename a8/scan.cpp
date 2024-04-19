@@ -77,3 +77,12 @@ int main() {
     SCAN(arr, head, direction, size, disk_size);
     return 0;
 }
+
+// Enter the number of requests: 7
+// Enter the disk size: 200
+// Enter the requests: 16 24 43 82 140 170 190
+// Enter the initial head position: 50
+// Enter the direction (left or right): right
+// Total number of seek operations: 332
+// Seek Sequence is: 82 -> 140 -> 170 -> 190 -> 199 -> 43 -> 24 -> 16
+

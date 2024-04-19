@@ -22,7 +22,7 @@ void firstFit(int blockSize[], int blockNum, int processSize[], int processNum) 
     
     cout << "\nProcess No.\tProcess Size\tBlock no.\n";
     for (int i = 0; i < processNum; i++) {
-        cout << " " << i+1 << "\t\t" << processSize[i] << "\t\t";
+        cout << " " << i+1 << "\t\t\t\t" << processSize[i] << "\t\t\t\t";
         if (allocation[i] != -1)
             cout << allocation[i] + 1;
         else
@@ -59,3 +59,14 @@ int main() {
     
     return 0 ;
 }
+
+// Enter the number of blocks: 5
+// Enter the number of process: 4
+// Enter all the blocks size: 100 500 200 300 600
+// Enter all the process size: 212 417 112 426
+
+// Process No. Process Size    Block no.
+//  1              212             2
+//  2              417             5
+//  3              112             2
+//  4              426             Not Allocated

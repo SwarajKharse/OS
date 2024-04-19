@@ -91,7 +91,7 @@ int main() {
     int pagesValues[pageCount];
     
     cout << "Enter the page values: ";
-    for(int i = 0; i < pageCount; i++) {
+    for(int i = 0; i < pageCount; i++){
         cin >> pagesValues[i];
     }
     
@@ -100,3 +100,31 @@ int main() {
     
     return 0;
 }
+
+// Enter the number of frames: 4
+// Enter the number of pages: 20
+// Enter the page values: 7 0 1 2 0 3 0 4 2 3 0 3 2 1 2 0 1 7 0 1
+// Stream Frame1 Frame2 Frame3 Frame4 
+// 7       7       -       -       - 
+// 0       7       0       -       - 
+// 1       7       0       1       - 
+// 2       7       0       1       2
+// 0       7       0       1       2
+// 3       3       0       1       2
+// 0       3       0       1       2
+// 4       3       0       4       2
+// 2       3       0       4       2
+// 3       3       0       4       2
+// 0       3       0       4       2
+// 3       3       0       4       2
+// 2       3       0       4       2
+// 1       1       0       4       2
+// 2       1       0       4       2
+// 0       1       0       4       2
+// 1       1       0       4       2
+// 7       1       0       7       2
+// 0       1       0       7       2
+// 1       1       0       7       2
+
+// Hits: 12
+// Misses: 8

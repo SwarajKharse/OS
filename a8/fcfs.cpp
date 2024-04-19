@@ -2,7 +2,7 @@
 using namespace std;
 
 int main() {
-    int i, j, k, n, m, sum = 0, x, y, h;
+    int i, n, m, sum = 0, h;
     cout << "Enter the size of disk: ";
     cin >> m;
     cout << "Enter number of requests: ";
@@ -41,3 +41,10 @@ int main() {
 
     return 0;
 }
+
+// Enter the size of disk: 200
+// Enter number of requests: 8
+// Enter the requests: 98 183 37 122 14 124 65 67
+// Enter the head position: 53
+// 53 -> 98  -> 183  -> 37  -> 122  -> 14  -> 124  -> 65  -> 67 
+// Total head movements = 640

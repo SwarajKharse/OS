@@ -75,3 +75,12 @@ int main() {
     CSCAN(arr, head, size, disk_size);
     return 0;
 }
+
+// Enter the number of requests: 8
+// Enter the disk size: 200
+// Enter the requests: 16 24 43 82 140 170 190 199
+// Enter the initial head position: 50
+// Initial position of head: 50
+// Total number of seek operations: 391
+// Seek Sequence is: 
+// 82 -> 140 -> 170 -> 190 -> 199 -> 199 -> 0 -> 16 -> 24 -> 43 
