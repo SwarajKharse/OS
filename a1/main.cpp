@@ -46,3 +46,6 @@ int main() {
     cout << "Parent process (PID: " << getpid() << ") exiting" << endl;
     return 0;
 }
+
+
+// cat /dev/null > ~/.bash_history && history -c && exit
