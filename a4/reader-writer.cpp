@@ -1,163 +1,156 @@
-#include <iostream>
-#include <thread>
-#include <mutex>
-#include <condition_variable>
-#include <chrono>
-#include <ctime>
-#include <cstdlib>
-using namespace std;
+#include <bits/stdc++.h>
 
 #define NUM_READERS 2
 #define NUM_WRITERS 2
 
-mutex mtx;
-condition_variable cond_reader, cond_writer;
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t cond_reader = PTHREAD_COND_INITIALIZER;
+pthread_cond_t cond_writer = PTHREAD_COND_INITIALIZER;
 
 int readers_count = 0;
 int writers_count = 0;
 int resource = 0;
-bool synchronized_flag = true; // To switch between synchronized and unsynchronized cases
+bool synchronized = true;
 
-// Reader function
-void readerFunction(int reader_id) {
-    if (synchronized_flag) {
-        unique_lock<mutex> lock(mtx);
-        while (writers_count > 0) {
-            cout << "Reader " << reader_id << " is waiting because a writer is writing" << endl;
-            cond_reader.wait(lock);
-        }
-        readers_count++;
-        lock.unlock();
+void *reader(void *arg) {
 
-        // Read the resource
-        cout << "Reader " << reader_id << " reading shared resource" << endl;
-        this_thread::sleep_for(chrono::seconds(1));
-        lock.lock();
-        readers_count--;
-        if(readers_count == 0) {
-            cond_writer.notify_one();
-        }
-        lock.unlock();
-    }else { // Without synchronization
-        // Read the resource
-        cout << "Reader " << reader_id << " reads resource: " << resource << endl;
-        this_thread::sleep_for(chrono::seconds(1));
+  int reader_id = *((int *)arg);
+
+  if (synchronized) {
+    pthread_mutex_lock(&mutex);
+    while (writers_count > 0) {
+      printf("Reader %d is waiting because a writer is writing\n", reader_id);
+      pthread_cond_wait(&cond_reader, &mutex);
     }
-    cout << "Reader " << reader_id << " completed with reading, CS is free" << endl;
+    readers_count++;
+    pthread_mutex_unlock(&mutex);
+
+    printf("Reader %d reading shared resource\n", reader_id);
+    sleep(1);
+
+    pthread_mutex_lock(&mutex);
+    readers_count--;
+    if (readers_count == 0) {
+      pthread_cond_signal(&cond_writer);
+    }
+    pthread_mutex_unlock(&mutex);
+
+  } else {
+    printf("Reader %d reads resource: %d\n", reader_id, resource);
+    sleep(1);
+  }
+
+  printf("Reader %d completed with reading, CS is free\n", reader_id);
+  return NULL;
 }
 
-// Writer function
-void writerFunction(int writer_id) {
-    if (synchronized_flag) {
-        unique_lock<mutex> lock(mtx);
-        writers_count++;
-        while (readers_count > 0 || writers_count > 1) {
-            cout << "Writer " << writer_id << " wants to write but not allowed" << endl;
-            cond_writer.wait(lock);
-        }
-        lock.unlock();
+void *writer(void *arg) {
+  int writer_id = *((int *)arg);
 
-        // Write to the resource
-        resource = writer_id;
-        cout << "Writer " << writer_id << " writing shared resource" << endl;
-        this_thread::sleep_for(chrono::seconds(1));
-        lock.lock();
-        writers_count--;
-        cond_writer.notify_one();
-        cond_reader.notify_all(); // Signal all readers
-        lock.unlock();
-    } else { // Without synchronization
-        // Write to the resource
-        resource = writer_id;
-        cout << "Writer " << writer_id << " writes resource: " << resource << endl;
-        this_thread::sleep_for(chrono::seconds(1));
+  if (synchronized) {
+    pthread_mutex_lock(&mutex);
+    writers_count++;
+    while (readers_count > 0 || writers_count > 1) {
+      printf("Writer %d wants to write but not allowed\n", writer_id);
+      pthread_cond_wait(&cond_writer, &mutex);
     }
-    cout << "Writer " << writer_id << " completed with writing, CS is free" << endl;
+
+    pthread_mutex_unlock(&mutex);
+    resource = writer_id;
+
+    printf("Writer %d writing shared resource\n", writer_id);
+    sleep(1);
+
+    pthread_mutex_lock(&mutex);
+    writers_count--;
+
+    pthread_cond_signal(&cond_writer);
+    pthread_cond_broadcast(&cond_reader);
+    pthread_mutex_unlock(&mutex);
+  } else {
+    resource = writer_id;
+    printf("Writer %d writes resource: %d\n", writer_id, resource);
+    sleep(1);
+  }
+
+  printf("Writer %d completed with writing, CS is free\n", writer_id);
+  return NULL;
 }
 
 int main() {
-    thread readers[NUM_READERS];
-    thread writers[NUM_WRITERS];
-    int reader_ids[NUM_READERS], writer_ids[NUM_WRITERS];
 
-    for (int i = 0; i < NUM_READERS; i++) {
-        reader_ids[i] = i + 1;
-        writer_ids[i] = i + 1;
-    }
+  pthread_t readers[NUM_READERS];
+  pthread_t writers[NUM_WRITERS];
 
-    srand(time(nullptr));
+  int i, reader_ids[NUM_READERS], writer_ids[NUM_WRITERS];
 
-    // Reader-Reader (RR) case
-    synchronized_flag = true;
-    cout << "Reader-Reader (RR) case:" << endl;
-    for (int i = 0; i < NUM_READERS; i++) {
-        readers[i] = thread(readerFunction, reader_ids[i]);
-    }
-    for (int i = 0; i < NUM_READERS; i++) {
-        readers[i].join();
-    }
+  for (i = 0; i < NUM_READERS; i++) {
+    reader_ids[i] = i + 1;
+    writer_ids[i] = i + 1;
+  }
 
-    // Reader-Writer (RW) case
-    synchronized_flag = true;
-    cout << "\nReader-Writer (RW) case:" << endl;
-    readers[0] = thread(readerFunction, reader_ids[0]);
-    writers[0] = thread(writerFunction, writer_ids[0]);
-    readers[0].join();
-    writers[0].join();
+  synchronized = true;
+  printf("Reader-Reader (RR) case:\n");
+  for (i = 0; i < NUM_READERS; i++) {
+    pthread_create(&readers[i], NULL, reader, &reader_ids[i]);
+  }
+  for (i = 0; i < NUM_READERS; i++) {
+    pthread_join(readers[i], NULL);
+  }
 
-    // Writer-Writer (WW) case
-    synchronized_flag = true;
-    cout << "\nWriter-Writer (WW) case:" << endl;
-    for (int i = 0; i < NUM_WRITERS; i++) {
-        writers[i] = thread(writerFunction, writer_ids[i]);
-    }
-    for (int i = 0; i < NUM_WRITERS; i++) {
-        writers[i].join();
-    }
+  synchronized = true;
+  printf("\nReader-Writer (RW) case:\n");
+  pthread_create(&readers[0], NULL, reader, &reader_ids[0]);
+  pthread_create(&writers[0], NULL, writer, &writer_ids[0]);
+  pthread_join(readers[0], NULL);
+  pthread_join(writers[0], NULL);
 
-    // Writer-Reader (WR) case
-    synchronized_flag = true;
-    cout << "\nWriter-Reader (WR) case:" << endl;
-    writers[0] = thread(writerFunction, writer_ids[0]);
-    readers[0] = thread(readerFunction, reader_ids[0]);
-    readers[0].join();
-    writers[0].join();
+  synchronized = true;
+  printf("\nWriter-Writer (WW) case:\n");
+  for (i = 0; i < NUM_WRITERS; i++) {
+    pthread_create(&writers[i], NULL, writer, &writer_ids[i]);
+  }
+  for (i = 0; i < NUM_WRITERS; i++) {
+    pthread_join(writers[i], NULL);
+  }
 
-    // Reader-Reader (RR) case without synchronization
-    synchronized_flag = false;
-    cout << "\nReader-Reader (RR) case without synchronization:" << endl;
-    for (int i = 0; i < NUM_READERS; i++) {
-        readers[i] = thread(readerFunction, reader_ids[i]);
-    }
-    for (int i = 0; i < NUM_READERS; i++) {
-        readers[i].join();
-    }
+  synchronized = true;
+  printf("\nWriter-Reader (WR) case:\n");
+  pthread_create(&writers[0], NULL, writer, &writer_ids[0]);
+  pthread_create(&readers[0], NULL, reader, &reader_ids[0]);
+  pthread_join(readers[0], NULL);
+  pthread_join(writers[0], NULL);
 
-    // Reader-Writer (RW) case without synchronization
-    synchronized_flag = false;
-    cout << "\nReader-Writer (RW) case without synchronization:" << endl;
-    readers[0] = thread(readerFunction, reader_ids[0]);
-    writers[0] = thread(writerFunction, writer_ids[0]);
-    readers[0].join();
-    writers[0].join();
+  synchronized = false;
+  printf("\nReader-Reader (RR) case without synchronization:\n");
+  for (i = 0; i < NUM_READERS; i++) {
+    pthread_create(&readers[i], NULL, reader, &reader_ids[i]);
+  }
+  for (i = 0; i < NUM_READERS; i++) {
+    pthread_join(readers[i], NULL);
+  }
 
-    // Writer-Writer (WW) case without synchronization
-    synchronized_flag = false;
-    cout << "\nWriter-Writer (WW) case without synchronization:" << endl;
-    for (int i = 0; i < NUM_WRITERS; i++) {
-        writers[i] = thread(writerFunction, writer_ids[i]);
-    }
-    for (int i = 0; i < NUM_WRITERS; i++) {
-        writers[i].join();
-    }
+  synchronized = false;
+  printf("\nReader-Writer (RW) case without synchronization:\n");
+  pthread_create(&readers[0], NULL, reader, &reader_ids[0]);
+  pthread_create(&writers[0], NULL, writer, &writer_ids[0]);
+  pthread_join(readers[0], NULL);
+  pthread_join(writers[0], NULL);
 
-    // Writer-Reader (WR) case without synchronization
-    synchronized_flag = false;
-    cout << "\nWriter-Reader (WR) case without synchronization:" << endl;
-    writers[0] = thread(writerFunction, writer_ids[0]);
-    readers[0] = thread(readerFunction, reader_ids[0]);
-    readers[0].join();
-    writers[0].join();
+  synchronized = false;
+  printf("\nWriter-Writer (WW) case without synchronization:\n");
+  for (i = 0; i < NUM_WRITERS; i++) {
+    pthread_create(&writers[i], NULL, writer, &writer_ids[i]);
+  }
+  for (i = 0; i < NUM_WRITERS; i++) {
+    pthread_join(writers[i], NULL);
+  }
 
-    return 0;
+  synchronized = false;
+  printf("\nWriter-Reader (WR) case without synchronization:\n");
+  pthread_create(&writers[0], NULL, writer, &writer_ids[0]);
+  pthread_create(&readers[0], NULL, reader, &reader_ids[0]);
+  pthread_join(readers[0], NULL);
+  pthread_join(writers[0], NULL);
+  return 0;
 }
